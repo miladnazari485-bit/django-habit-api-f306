@@ -33,6 +33,18 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Python/Django related
+**/__pycache__/
+*.py[cod]
+*.sqlite3
+.coverage
+.venv/
+backend/staticfiles/
+
+# Local configuration must never be committed.
+.env
+backend/.env
+
 # Symbolication related
 app.*.symbols
 
