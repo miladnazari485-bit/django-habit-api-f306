@@ -1,0 +1,36 @@
+digraph HabitTrackerDataModel {
+  graph [
+    bgcolor="transparent",
+    fontname="Arial",
+    label="Habit Tracker API Data Model",
+    labelloc="t",
+    pad="0.4",
+    rankdir="LR",
+    ranksep="0.8"
+  ];
+  node [
+    color="#6650a4",
+    fillcolor="#f6f2ff",
+    fontname="Arial",
+    shape="record",
+    style="filled"
+  ];
+  edge [color="#625b71", fontname="Arial"];
+
+  user [
+    label="{User|id: UUID (PK)\lemail: unique\lfull_name\ltimezone\lis_active\lis_staff\ldate_joined\l}"
+  ];
+  habit [
+    label="{Habit|id: UUID (PK)\lowner_id: UUID (FK)\lname\lcolor\lkind: check / count\lgoal\lunit\larchived\lcreated_at / updated_at\l}"
+  ];
+  entry [
+    label="{HabitEntry|id: UUID (PK)\lhabit_id: UUID (FK)\ldate\lvalue\lcreated_at / updated_at\l|UNIQUE (habit_id, date)\l}"
+  ];
+  task [
+    label="{Task|id: UUID (PK)\lowner_id: UUID (FK)\ltitle\ldue_date\ldone\lcompleted_at\lcreated_at / updated_at\l}"
+  ];
+
+  user -> habit [label=" owns 0..*", arrowhead="crow", arrowtail="tee"];
+  habit -> entry [label=" records 0..*", arrowhead="crow", arrowtail="tee"];
+  user -> task [label=" owns 0..*", arrowhead="crow", arrowtail="tee"];
+}

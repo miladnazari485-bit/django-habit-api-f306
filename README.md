@@ -2,6 +2,16 @@
 
 A Flutter habit tracker. The same project runs on Windows, Android, iOS, and the web.
 
+## Django REST API
+
+The repository now includes a production-oriented Django API for synchronizing
+habits, dated entries, and tasks across the Flutter app and future React clients.
+It provides PostgreSQL support, JWT authentication, OpenAPI documentation,
+security-focused production settings, tests, and a non-root Docker deployment.
+
+See [`backend/README.md`](backend/README.md) for setup, endpoint documentation,
+the data-model picture, and the production checklist.
+
 ## Open it on Windows in VS Code
 
 1. Install [Flutter for Windows](https://docs.flutter.dev/get-started/install/windows).
