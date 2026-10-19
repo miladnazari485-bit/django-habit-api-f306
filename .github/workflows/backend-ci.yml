@@ -1,0 +1,55 @@
+name: Backend CI
+
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+      - "compose.yaml"
+      - ".github/workflows/backend-ci.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "backend/**"
+      - "compose.yaml"
+      - ".github/workflows/backend-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - name: Install locked dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Lint Python
+        run: ruff check .
+      - name: Verify migrations
+        run: python manage.py makemigrations --check --dry-run
+      - name: Validate OpenAPI contract
+        run: python manage.py spectacular --file /tmp/openapi.yaml --validate
+      - name: Run tests with coverage
+        run: coverage run manage.py test && coverage report
+      - name: Run Django deployment checks
+        env:
+          DJANGO_ENV: production
+          DJANGO_SECRET_KEY: ci-only-long-secret-key-not-used-outside-continuous-integration
+          DJANGO_ALLOWED_HOSTS: api.example.test
+          DATABASE_URL: sqlite:////tmp/production-check.sqlite3
+        run: python manage.py check --deploy --fail-level WARNING
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build production image
+        run: docker build --tag habit-tracker-api:ci backend
